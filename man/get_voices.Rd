@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_voice.R
 \name{get_voices}
 \alias{get_voices}
-\title{Get voices}
+\title{Get voices names}
 \usage{
 get_voices()
 }
@@ -17,4 +17,3 @@ and returns a tibble containing the voice_id, name, and preview_url for each voi
 get_voices()
 
 }
-\keyword{internal}

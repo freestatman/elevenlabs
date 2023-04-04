@@ -1,4 +1,4 @@
-#' Get voices
+#' Get voices names
 #'
 #' This function retrieves a list of voices from the URL "https://api.elevenlabs.io/v1/voices"
 #' and returns a tibble containing the voice_id, name, and preview_url for each voice.
@@ -10,7 +10,7 @@
 #' @examples
 #' get_voices()
 #'
-#' @keywords internal
+#' @export
 get_voices <- function() {
   # get the list of voices
   voices <- jsonlite::fromJSON("https://api.elevenlabs.io/v1/voices")$voices
