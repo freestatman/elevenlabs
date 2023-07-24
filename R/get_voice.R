@@ -64,6 +64,7 @@ get_voice_id <- function(voice_name) {
 #' @param ... Additional arguments to be passed on to other methods
 #' @return The name of the output file
 #' @export
+#' @import httr2
 #' @examples
 #'
 #' text_to_speech("Hello, how are you today?")
