@@ -5,8 +5,8 @@ library(httr2)
 library(devtools) # make sure to have devtools 1.4!
 library(glue)
 
-Sys.setenv("ELEVENLABS_API_KEY" = "ef4144ddcd1002595dc9d9c2db1f13a7")
-Sys.setenv("ELEVENLABS_API_URL" = "https://api.elevenlabs.io/v1/")
+Sys.setenv("ELEVENLABS_API_KEY" = "your_api_key")
+Sys.setenv("ELEVENLABS_API_URL" = "https://api.elevenlabs.io/v1")
 Sys.getenv("ELEVENLABS_API_KEY")
 
 get_voices()$name
@@ -17,8 +17,11 @@ text_to_speech(
   text = "Hello, my name is Adam. I am a robot.",
   voice_name = "Adam",
   output_file = "output.mp3",
+  model_id = "eleven_multilingual_v2",
   stability = 0.8,
-  similarity_boost = 0.5
+  similarity_boost = 0.5,
+  style = 0.2,
+  use_speaker_boost = TRUE
 )
 
 seq(0, 1, 0.2) %>%
