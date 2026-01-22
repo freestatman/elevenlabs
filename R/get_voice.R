@@ -17,22 +17,43 @@
 #'
 #' @export
 get_voices <- function(
-    api_key = Sys.getenv("ELEVENLABS_API_KEY"),
-    api_url = Sys.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1")
+  api_key = Sys.getenv("ELEVENLABS_API_KEY"),
+  api_url = Sys.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1")
 ) {
   api_key <- .elevenlabs_validate_api_key(api_key)
   api_url <- .elevenlabs_normalize_api_url(api_url)
 
   request <- httr2::request(glue::glue("{api_url}/voices")) %>%
     httr2::req_method("GET") %>%
-    httr2::req_headers(`xi-api-key` = api_key) %>%
-    httr2::req_retry(max_tries = 3L)
+    httr2::req_headers(
+      `xi-api-key` = api_key,
+      accept = "application/json"
+    ) %>%
+    httr2::req_retry(max_tries = 3L) %>%
+    httr2::req_error(is_error = function(resp) FALSE)
 
   resp <- request %>% httr2::req_perform()
+
+  if (httr2::resp_status(resp) == 401) {
+    stop(
+      "HTTP 401 Unauthorized. Please check that your ELEVENLABS_API_KEY is correct.",
+      call. = FALSE
+    )
+  }
+
+  if (httr2::resp_is_error(resp)) {
+    httr2::resp_check_status(resp)
+  }
+
   voices <- jsonlite::fromJSON(httr2::resp_body_string(resp))$voices
 
   voices %>%
-    dplyr::select(dplyr::any_of(c("voice_id", "name", "preview_url", "category")))
+    dplyr::select(dplyr::any_of(c(
+      "voice_id",
+      "name",
+      "preview_url",
+      "category"
+    )))
 }
 
 
@@ -54,15 +75,16 @@ get_voices <- function(
 #' get_voice_id("Adam")
 #' get_voice_id("adam")
 get_voice_id <- function(
-    voice_name,
-    api_key = Sys.getenv("ELEVENLABS_API_KEY"),
-    api_url = Sys.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1")
+  voice_name,
+  api_key = Sys.getenv("ELEVENLABS_API_KEY"),
+  api_url = Sys.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1")
 ) {
   voices <- get_voices(api_key = api_key, api_url = api_url)
 
   matches <- voices %>%
-    dplyr::filter(stringr::str_to_lower(name) ==
-      stringr::str_to_lower(voice_name)) %>%
+    dplyr::filter(
+      stringr::str_to_lower(name) == stringr::str_to_lower(voice_name)
+    ) %>%
     dplyr::pull(voice_id)
 
   if (length(matches) > 1) {
@@ -111,23 +133,23 @@ get_voice_id <- function(
 #' text_to_speech("Hello, how are you today?")
 #'
 text_to_speech <- function(
-    text,
-    api_key = Sys.getenv("ELEVENLABS_API_KEY"),
-    voice_name = "Elli",
-    voice_id = NULL,
-    output_file = "output.mp3",
-    model_id = "eleven_multilingual_v2",
-    stability = 0,
-    similarity_boost = 0,
-    style = 0,
-    use_speaker_boost = TRUE,
-    output_format = "mp3_44100_128",
-    optimize_streaming_latency = NULL,
-    seed = NULL,
-    previous_text = NULL,
-    next_text = NULL,
-    api_url = Sys.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1"),
-    ...
+  text,
+  api_key = Sys.getenv("ELEVENLABS_API_KEY"),
+  voice_name = "Elli",
+  voice_id = NULL,
+  output_file = "output.mp3",
+  model_id = "eleven_multilingual_v2",
+  stability = 0,
+  similarity_boost = 0,
+  style = 0,
+  use_speaker_boost = TRUE,
+  output_format = "mp3_44100_128",
+  optimize_streaming_latency = NULL,
+  seed = NULL,
+  previous_text = NULL,
+  next_text = NULL,
+  api_url = Sys.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1"),
+  ...
 ) {
   api_key <- .elevenlabs_validate_api_key(api_key)
   api_url <- .elevenlabs_normalize_api_url(api_url)
@@ -147,7 +169,10 @@ text_to_speech <- function(
   }
 
   if (length(voice_id) == 0 || !nzchar(voice_id[1])) {
-    stop("Could not resolve a voice_id for the supplied voice_name.", call. = FALSE)
+    stop(
+      "Could not resolve a voice_id for the supplied voice_name.",
+      call. = FALSE
+    )
   }
 
   voice_id <- voice_id[1]
@@ -209,7 +234,7 @@ text_to_speech <- function(
       call. = FALSE
     )
   }
-  api_key
+  trimws(api_key)
 }
 
 .elevenlabs_compact_list <- function(x) {

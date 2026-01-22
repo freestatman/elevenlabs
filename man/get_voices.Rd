@@ -17,7 +17,8 @@ ELEVENLABS_API_KEY environment variable.}
 ELEVENLABS_API_URL environment variable or "https://api.elevenlabs.io/v1".}
 }
 \value{
-A tibble with columns voice_id, name, preview_url, and category (when available).
+A tibble with columns voice_id, name, preview_url, and category
+when available.
 }
 \description{
 This function retrieves a list of voices from the ElevenLabs API and returns
