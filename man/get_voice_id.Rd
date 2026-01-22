@@ -4,13 +4,23 @@
 \alias{get_voice_id}
 \title{Get Voice ID}
 \usage{
-get_voice_id(voice_name)
+get_voice_id(
+  voice_name,
+  api_key = Sys.getenv("ELEVENLABS_API_KEY"),
+  api_url = Sys.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1")
+)
 }
 \arguments{
 \item{voice_name}{A character string indicating the name of the desired voice.}
+
+\item{api_key}{The API key for ElevenLabs. Defaults to the
+ELEVENLABS_API_KEY environment variable.}
+
+\item{api_url}{Base URL for the ElevenLabs API. Defaults to the
+ELEVENLABS_API_URL environment variable or "https://api.elevenlabs.io/v1".}
 }
 \value{
-Numeric ID associated with the given voice name.
+Character ID associated with the given voice name.
 }
 \description{
 This function retrieves the ID associated with a specific voice name.

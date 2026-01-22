@@ -22,7 +22,18 @@ Sys.setenv(ELEVENLABS_API_KEY = "your_api_key")
 text_to_speech(
   "Hello, how are you today?",
   api_key = Sys.getenv("ELEVENLABS_API_KEY"),
-  voice_name = "Elli"
+  voice_name = "Elli",
+  model_id = "eleven_multilingual_v2",
+  stability = 0.4,
+  similarity_boost = 0.6
+)
+```
+
+## Example Shiny app
+
+```r
+shiny::runApp(
+  system.file("shiny/elevenlabs_app", package = "elevenlabs")
 )
 ```
 

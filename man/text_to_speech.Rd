@@ -8,20 +8,37 @@ text_to_speech(
   text,
   api_key = Sys.getenv("ELEVENLABS_API_KEY"),
   voice_name = "Elli",
+  voice_id = NULL,
   output_file = "output.mp3",
+  model_id = "eleven_multilingual_v2",
   stability = 0,
   similarity_boost = 0,
+  style = 0,
+  use_speaker_boost = TRUE,
+  output_format = "mp3_44100_128",
+  optimize_streaming_latency = NULL,
+  seed = NULL,
+  previous_text = NULL,
+  next_text = NULL,
+  api_url = Sys.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1"),
   ...
 )
 }
 \arguments{
 \item{text}{The text to convert to speech}
 
-\item{api_key}{The API key for Eleven Labs API. Default is to use the API key stored in the ELEVENLABS_API_KEY environment variable.}
+\item{api_key}{The API key for ElevenLabs. Defaults to the
+ELEVENLABS_API_KEY environment variable.}
 
 \item{voice_name}{The name of the voice to use. Default is "Elli".}
 
+\item{voice_id}{Optional voice ID. If supplied, this takes precedence over
+voice_name.}
+
 \item{output_file}{The name of the output file. Default is "output.mp3"}
+
+\item{model_id}{The model ID to use for synthesis. Defaults to
+"eleven_multilingual_v2".}
 
 \item{stability}{The stability setting, a numeric value between 0 and 1.
 Specifies how predictable voice intonation should be. Default is 0}
@@ -29,13 +46,33 @@ Specifies how predictable voice intonation should be. Default is 0}
 \item{similarity_boost}{The similarity boost setting, a numeric value between 0 and 1.
 Specifies how much the voice should resemble the recordings used to train the voice model. Default is 0}
 
+\item{style}{The style setting, a numeric value between 0 and 1. Default is 0.}
+
+\item{use_speaker_boost}{Whether to enable speaker boost. Default is TRUE.}
+
+\item{output_format}{Output format for the audio. Defaults to
+"mp3_44100_128".}
+
+\item{optimize_streaming_latency}{Optional optimization level for
+streaming latency.}
+
+\item{seed}{Optional seed for deterministic generation.}
+
+\item{previous_text}{Optional previous context text.}
+
+\item{next_text}{Optional next context text.}
+
+\item{api_url}{Base URL for the ElevenLabs API. Defaults to the
+ELEVENLABS_API_URL environment variable or "https://api.elevenlabs.io/v1".}
+
 \item{...}{Additional arguments to be passed on to other methods}
 }
 \value{
 The name of the output file
 }
 \description{
-This function converts text to speech using the Eleven Labs API. The output file is a mp3 format.
+This function converts text to speech using the Eleven Labs API. The output
+file is a mp3 format by default.
 }
 \examples{
 

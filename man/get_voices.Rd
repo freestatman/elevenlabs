@@ -4,14 +4,25 @@
 \alias{get_voices}
 \title{Get voices names}
 \usage{
-get_voices()
+get_voices(
+  api_key = Sys.getenv("ELEVENLABS_API_KEY"),
+  api_url = Sys.getenv("ELEVENLABS_API_URL", "https://api.elevenlabs.io/v1")
+)
+}
+\arguments{
+\item{api_key}{The API key for ElevenLabs. Defaults to the
+ELEVENLABS_API_KEY environment variable.}
+
+\item{api_url}{Base URL for the ElevenLabs API. Defaults to the
+ELEVENLABS_API_URL environment variable or "https://api.elevenlabs.io/v1".}
 }
 \value{
-A tibble with columns voice_id, name, and preview_url.
+A tibble with columns voice_id, name, preview_url, and category
+when available.
 }
 \description{
-This function retrieves a list of voices from the URL "https://api.elevenlabs.io/v1/voices"
-and returns a tibble containing the voice_id, name, and preview_url for each voice.
+This function retrieves a list of voices from the ElevenLabs API and returns
+a tibble containing the voice_id, name, and preview_url for each voice.
 }
 \examples{
 get_voices()
