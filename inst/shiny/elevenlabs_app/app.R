@@ -10,13 +10,26 @@ if (!dir.exists(audio_dir)) {
 }
 addResourcePath("elevenlabs_audio", audio_dir)
 
+# Define a modern theme
+my_theme <- bs_theme(
+  version = 5,
+  preset = "zephyr", # Clean, modern, airy
+  primary = "#2C3E50", # Professional dark blue-grey
+  base_font = font_google("Inter"),
+  heading_font = font_google("Plus Jakarta Sans"),
+  code_font = font_google("JetBrains Mono")
+)
+
 ui <- page_sidebar(
-  title = "ElevenLabs Text-to-Speech",
-  theme = bs_theme(preset = "flatly", version = 5),
+  title = "ElevenLabs Studio",
+  theme = my_theme,
 
   sidebar = sidebar(
-    title = "Controls",
-    width = 350,
+    title = "Configuration",
+    width = 320,
+    bg = "#f8f9fa", # Light gray background for sidebar
+    class = "shadow-sm border-0", # Clean sidebar look
+
     passwordInput(
       "api_key",
       "API Key",
@@ -33,16 +46,18 @@ ui <- page_sidebar(
 
     textAreaInput(
       "text",
-      "Text",
-      value = "Hello, this is an ElevenLabs demo from R.",
-      rows = 4,
+      "Input Text",
+      value = "Hello! This is a demo of realistic speech synthesis using R.",
+      rows = 5,
       resize = "vertical"
     ),
 
     accordion(
       open = FALSE,
+      class = "accordion-flush", # Cleaner accordion
       accordion_panel(
-        "Advanced Settings",
+        "Voice Settings",
+        icon = icon("sliders"),
         textInput("model_id", "Model ID", value = "eleven_multilingual_v2"),
         sliderInput(
           "stability",
@@ -50,18 +65,28 @@ ui <- page_sidebar(
           min = 0,
           max = 1,
           value = 0.5,
-          step = 0.05
+          step = 0.05,
+          ticks = FALSE
         ),
         sliderInput(
           "similarity",
-          "Similarity Boost",
+          "Clarity + Similarity",
           min = 0,
           max = 1,
           value = 0.75,
-          step = 0.05
+          step = 0.05,
+          ticks = FALSE
         ),
-        sliderInput("style", "Style", min = 0, max = 1, value = 0, step = 0.05),
-        checkboxInput("speaker_boost", "Use speaker boost", value = TRUE),
+        sliderInput(
+          "style",
+          "Style Exaggeration",
+          min = 0,
+          max = 1,
+          value = 0,
+          step = 0.05,
+          ticks = FALSE
+        ),
+        checkboxInput("speaker_boost", "Boost Speaker", value = TRUE),
         selectInput(
           "output_format",
           "Output format",
@@ -72,7 +97,7 @@ ui <- page_sidebar(
     ),
 
     div(
-      class = "d-grid gap-2 mt-3",
+      class = "d-grid gap-2 mt-4",
       actionButton(
         "synthesize",
         "Generate Audio",
@@ -85,27 +110,41 @@ ui <- page_sidebar(
   # Main Content
   layout_columns(
     col_widths = c(12, 12),
+    gap = "1.5rem",
 
     # Player Card
     card(
-      card_header("Audio Player", class = "bg-primary text-white"),
+      class = "shadow-sm border-0",
+      card_header(
+        class = "bg-transparent border-bottom-0 h5",
+        icon("play-circle"),
+        "Audio Player"
+      ),
       card_body(
         div(
-          style = "text-align: center; padding: 20px;",
+          class = "text-center p-4",
           uiOutput("audio_player"),
-          div(class = "mt-3", textOutput("status", inline = TRUE))
+          div(
+            class = "mt-3 text-secondary small",
+            textOutput("status", inline = TRUE)
+          )
         )
       )
     ),
 
     # History Card
     card(
-      card_header("Generation History", class = "bg-light"),
+      class = "shadow-sm border-0",
+      card_header(
+        class = "bg-transparent border-bottom-0 h5",
+        icon("clock-rotate-left"),
+        "History"
+      ),
       card_body(
         DTOutput("history_table"),
-        p(
-          class = "text-muted small mt-2",
-          "Click a row to replay previous generations."
+        div(
+          class = "text-muted small mt-2 fst-italic",
+          "Select a row to replay."
         )
       )
     )
@@ -251,6 +290,7 @@ server <- function(input, output, session) {
     datatable(
       display_df,
       selection = "single",
+      class = "table table-hover table-striped", # BS5 table classes
       options = list(
         pageLength = 5,
         dom = "tp",
