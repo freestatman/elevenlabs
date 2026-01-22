@@ -1,4 +1,4 @@
-.PHONY: help all document install build test check clean run_shiny
+.PHONY: help all document install build test check clean app
 
 RSCRIPT = Rscript
 
